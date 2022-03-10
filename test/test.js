@@ -68,12 +68,11 @@ describe('js-lyf-math', function () {
       // check proportions
       assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
 
-      /*
-      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
+      // print calculation error
+      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
       const invertedError = sqrtBN(den.div(nom));
-      console.log(`Сalculation error: 1/${invertedError.toString()}`);
-      */
+      console.log(`Сalculation error: 1/${invertedError.toString()} ~ ${1/invertedError.toNumber()}`);
     });
   });
 
@@ -98,12 +97,12 @@ describe('js-lyf-math', function () {
       // check proportions
       assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
 
-      /*
-      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
+      // print calculation error
+      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
       const invertedError = sqrtBN(den.div(nom));
-      console.log(`Сalculation error: 1/${invertedError.toString()}`);
-      */
+      console.log(`Сalculation error: 1/${invertedError.toString()} ~ ${1/invertedError.toNumber()}`);
+      
     });
   });
 });
