@@ -1,9 +1,13 @@
 # js-lyf-math
 
+JavaScript library containing leverage yield farming helper functions. Depends on https://github.com/indutny/bn.js
+
+### Usage
 ```js
-const {getReturn , optimalDeposit, sqrtBN}  = require('js-lyf-math');
+const {getReturn, optimalDeposit, sqrtBN}  = require('js-lyf-math');
 ```
 
+### Reference
 ```js
 /**
  * Calculates square root of a number
