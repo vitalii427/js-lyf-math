@@ -8,20 +8,6 @@ const TWO   = new BN(2);
 const FOUR  = new BN(4);
 const BPS_DIVISOR = new BN(10000);
 
-function sqrtBN(num){
-  if(num.lt(ZERO)) {
-    throw new Error("Negtiave input");
-  }
-  if(num.lt(TWO)) {
-    return num;
-  }
-
-  const smallCand = sqrtBN(num.shrn(2)).shln(1);
-  const largeCand = smallCand.add(ONE);
-
-  return largeCand.mul(largeCand).gt(num) ? smallCand : largeCand;
-}
-
 /**
  * Calculates square root of a number
  *  - throws an error when a number is negative
@@ -29,8 +15,18 @@ function sqrtBN(num){
  * @param  {string|number|BN}       number      a number
  * @return {BN}                                 square root of the given number
  */
-module.exports.sqrtBN = function (number) {
-  return sqrtBN(new BN(number));
+const sqrtBN = module.exports.sqrtBN = function(number) {
+  if(number.lt(ZERO)) {
+    throw new Error("Negtiave input");
+  }
+  if(number.lt(TWO)) {
+    return number;
+  }
+
+  const smallCand = sqrtBN(number.shrn(2)).shln(1);
+  const largeCand = smallCand.add(ONE);
+
+  return largeCand.mul(largeCand).gt(number) ? smallCand : largeCand;
 }
 
 function _optimalDeposit(amtA, amtB, resA, resB, fee) {
@@ -84,7 +80,7 @@ module.exports.optimalDeposit = function(amtA, amtB, resA, resB, fee) {
 }
 
 /**
- * Calculates how much output token will be returned after swap of the given amount of input token
+ * Calculates an amount output token will be returned after swap of the given amount of input token
  * 
  * @param  {string|number|BN}       amountIn    amount of input token to swap
  * @param  {string|number|BN}       reserveIn   input token reserve in pool
@@ -92,7 +88,7 @@ module.exports.optimalDeposit = function(amtA, amtB, resA, resB, fee) {
  * @param  {string|number|BN}       fee         swap fee value in bps (10000 = 100%)
  * @return {BN}                                 amount of output token
  */
-module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee) {
+const getSwapReturn = module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee) {
   const amtIn  = new BN(amountIn);
   const resIn  = new BN(reserveIn);
   const resOut = new BN(reserveOut);
@@ -107,7 +103,7 @@ module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee) {
 }
 
 /**
- * Calculates how much input token you should swap to get *at least* the given amount of output token
+ * Calculates an amount of input token you should swap to get *at least* the given amount of output token
  * 
  * @param  {string|number|BN}       amountOut   amount of output token to get
  * @param  {string|number|BN}       reserveIn   input token reserve in pool
@@ -127,4 +123,44 @@ module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee)
 
   const amountWithFee = amtOut.mul(BPS_DIVISOR).mul(resIn).div(resOut.sub(amtOut));
   return amountWithFee.div(BPS_DIVISOR.sub(_fee)).add(ONE);
+}
+
+/**
+ * Calculates a value that matches to the given number of shares
+ * 
+ * @param  {string|number|BN}       shares      number of shares
+ * @param  {string|number|BN}       totalShares total number of shares
+ * @param  {string|number|BN}       totalValue  total value
+ * @return {BN}                                 value
+ */
+ const sharesToValue = module.exports.sharesToValue = function(shares, totalShares, totalValue) {
+  return shares.mul(totalValue).div(totalShares);
+ }
+
+ /**
+ * Calculates a number of shares that match to the given value
+ * 
+ * @param  {string|number|BN}       value       a value
+ * @param  {string|number|BN}       totalShares total shares amount
+ * @param  {string|number|BN}       totalValue  total value
+ * @return {BN}                                 number of shares
+ */
+const valueToShares = module.exports.valueToShares = function(value, totalShares, totalValue) {
+  return value.mul(totalShares).div(totalValue);
+}
+
+/**
+ * Calculates 
+ * 
+ */
+module.exports.getPositionValue = function(shares, totalShares, reserveBase, reserveFarm, fee) {
+  shares = new BN(shares);
+  totalShares = new BN(totalShares);
+  reserveBase = new BN(reserveBase);
+  reserveFarm = new BN(reserveFarm);
+  fee = new BN(fee);
+  const amountBase = sharesToValue(shares, totalShares, reserveBase);
+  const amountFarm = sharesToValue(shares, totalShares, reserveFarm);
+  const totalValue = amountBase.add(getSwapReturn(amountFarm, reserveFarm.sub(amountFarm), reserveBase.sub(amountBase), fee));
+  return {amountBase, amountFarm, totalValue};
 }

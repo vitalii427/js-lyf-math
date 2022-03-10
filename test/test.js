@@ -1,6 +1,6 @@
 const assert = require('assert').strict;
 const BN = require('bn.js');
-const {getSwapReturn, getAmountToSwap, optimalDeposit, sqrtBN}  = require('../');
+const {getSwapReturn, getAmountToSwap, getPositionValue, optimalDeposit, sqrtBN}  = require('../');
 
 const O24 = new BN(10).pow(new BN(24));
 
@@ -22,6 +22,13 @@ describe('js-lyf-math', function () {
       assert.equal(newA.toString(),
         '19565008648014205995055588509');
     });
+
+    it('correct result 2', function () {
+      const amtB = getSwapReturn('5006869503815034239746844',
+        '19506816180606710428619073633', '10978629092969376468413246', 30);
+      assert.equal(amtB.toString(),
+        '2808743168589166436691');
+    });
   });
 
   describe('.getAmountToSwap()', function () {
@@ -38,15 +45,37 @@ describe('js-lyf-math', function () {
       assert.equal(amtA.toString(),
         '7887580948703408875322299');
 
-      // swap(amtA) should return a bit more than amtB needed
+      // swap(amtA) should return a bit more or equal amtB needed
       const newB_0 = getSwapReturn(amtA, resA, resB, fee);
       assert.ok(newB_0.gte(amtB));
 
-      // swap(amtA-1) should return a bit less than amtB needed
+      // swap(amtA-1) should return a bit less or equal amtB needed
       const newB_1 = getSwapReturn(amtA.sub(new BN(1)), resA, resB, fee);
       assert.ok(newB_1.lte(amtB));
     });
   });
+
+  describe('.getPositionValue()', function () {
+    it('should throw invalid input error', function () {
+      // TODO
+    });
+
+    it('correct result', function () {
+      const fee = new BN(0);
+      const resA = O24.mul(new BN(1299997));
+      const resB = O24.mul(new BN(1000000000));
+      const shares = O24.mul(new BN(3));
+      const totalShares = O24.mul(new BN(1000));
+      const  {amountBase, amountFarm, totalValue} = getPositionValue(shares, totalShares, resA, resB, fee);
+      assert.equal(amountBase.toString(),
+        '3899991000000000000000000000');
+      assert.equal(amountFarm.toString(),
+        '3000000000000000000000000000000');
+      assert.equal(totalValue.toString(),
+        '7788282027000000000000000000');
+    });
+  });
+
   describe('.optimalDeposit()', function () {
     it('should throw invalid input error', function () {
       // TODO
