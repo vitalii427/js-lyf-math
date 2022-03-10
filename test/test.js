@@ -1,11 +1,11 @@
 const assert = require('assert').strict;
 const BN = require('bn.js');
-const {getReturn, optimalDeposit, sqrtBN}  = require('../');
+const {getSwapReturn, getAmountToSwap, optimalDeposit, sqrtBN}  = require('../');
 
 const O24 = new BN(10).pow(new BN(24));
 
 describe('js-lyf-math', function () {
-  describe('.getReturn()', function () {
+  describe('.getSwapReturn()', function () {
     it('should throw invalid input error', function () {
       // TODO
     });
@@ -15,12 +15,36 @@ describe('js-lyf-math', function () {
       const amtA = O24.mul(new BN(20000));
       const resA = O24.mul(new BN(1299997));
       const resB = O24.mul(new BN(1000000000));
-      const amtB = getReturn(amtA, resA, resB, fee);
+      const amtB = getSwapReturn(amtA, resA, resB, fee);
       assert.equal(amtB.toString(),
         '14985887746017313557235134776761');
-      const newA = getReturn(amtB, resB.sub(amtB), resA.add(amtA), fee);
+      const newA = getSwapReturn(amtB, resB.sub(amtB), resA.add(amtA), fee);
       assert.equal(newA.toString(),
         '19565008648014205995055588509');
+    });
+  });
+
+  describe('.getAmountToSwap()', function () {
+    it('should throw invalid input error', function () {
+      // TODO
+    });
+
+    it('correct result', function () {
+      const fee = new BN(111);
+      const amtB = O24.mul(new BN(6000));
+      const resA = O24.mul(new BN(1299997));
+      const resB = O24.mul(new BN(1000000000));
+      const amtA = getAmountToSwap(amtB, resA, resB, fee);
+      assert.equal(amtA.toString(),
+        '7887580948703408875322299');
+
+      // swap(amtA) should return a bit more than amtB needed
+      const newB_0 = getSwapReturn(amtA, resA, resB, fee);
+      assert.ok(newB_0.gte(amtB));
+
+      // swap(amtA-1) should return a bit less than amtB needed
+      const newB_1 = getSwapReturn(amtA.sub(new BN(1)), resA, resB, fee);
+      assert.ok(newB_1.lte(amtB));
     });
   });
   describe('.optimalDeposit()', function () {
@@ -59,7 +83,7 @@ describe('js-lyf-math', function () {
       assert.equal(isReversed, false);
 
       // do direct swap (A -> B)
-      const swappedB    = getReturn(swapAmount, resA, resB, fee);
+      const swappedB    = getSwapReturn(swapAmount, resA, resB, fee);
       const afterSwapA  = amtA.sub(swapAmount);
       const newResA     = resA.add(swapAmount);
       const afterSwapB  = amtB.add(swappedB);
@@ -69,9 +93,9 @@ describe('js-lyf-math', function () {
       assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
 
       // print calculation error
-      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
-      const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const invertedError = sqrtBN(den.div(nom));
+      const numerator = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
+      const denominator = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
+      const invertedError = sqrtBN(denominator.div(numerator));
       console.log(`Сalculation error: 1/${invertedError.toString()} ~ ${1/invertedError.toNumber()}`);
     });
   });
@@ -88,7 +112,7 @@ describe('js-lyf-math', function () {
       assert.equal(isReversed, true);
 
       // do reversed swap (B -> A)
-      const swappedA    = getReturn(swapAmount, resB, resA, fee);
+      const swappedA    = getSwapReturn(swapAmount, resB, resA, fee);
       const afterSwapA  = amtA.add(swappedA);
       const newResA     = resA.sub(swappedA);
       const afterSwapB  = amtB.sub(swapAmount);
@@ -98,11 +122,10 @@ describe('js-lyf-math', function () {
       assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
 
       // print calculation error
-      const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
-      const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const invertedError = sqrtBN(den.div(nom));
+      const numerator = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(2)).abs();
+      const denominator = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
+      const invertedError = sqrtBN(denominator.div(numerator));
       console.log(`Сalculation error: 1/${invertedError.toString()} ~ ${1/invertedError.toNumber()}`);
-      
     });
   });
 });

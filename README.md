@@ -4,7 +4,7 @@ JavaScript library containing leverage yield farming helper functions. Depends o
 
 ### Usage
 ```js
-const {getReturn, optimalDeposit, sqrtBN}  = require('js-lyf-math');
+const {getSwapReturn, getAmountToSwap, optimalDeposit, sqrtBN}  = require('js-lyf-math');
 ```
 
 ### Reference
@@ -19,7 +19,7 @@ const {getReturn, optimalDeposit, sqrtBN}  = require('js-lyf-math');
 module.exports.sqrtBN = function (number);
 
 /**
- * Calculates swap return
+ * Calculates how much output token will be returned after swap of the given amount of input token
  * 
  * @param  {string|number|BN}       amountIn    amount of input token to swap
  * @param  {string|number|BN}       reserveIn   input token reserve in pool
@@ -27,7 +27,18 @@ module.exports.sqrtBN = function (number);
  * @param  {string|number|BN}       fee         swap fee value in bps (10000 = 100%)
  * @return {BN}                                 amount of output token
  */
-module.exports.getReturn = function(amountIn, reserveIn, reserveOut, fee);
+module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee);
+
+/**
+ * Calculates how much input token you should swap to get *at least* the given amount of output token
+ * 
+ * @param  {string|number|BN}       amountOut   amount of output token to get
+ * @param  {string|number|BN}       reserveIn   input token reserve in pool
+ * @param  {string|number|BN}       reserveOut  output token reserve in pool
+ * @param  {string|number|BN}       fee         swap fee value in bps (10000 = 100%)
+ * @return {BN}                                 amount of input token
+ */
+module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee);
 
 /**
  * Calculates optimal swap amount and swap direction
