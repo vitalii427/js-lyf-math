@@ -71,8 +71,8 @@ describe('js-lyf-math', function () {
       /*
       const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const bps = den.div(nom);
-      console.log(`Сalculation error: 1/${bps.toString()}`);
+      const invertedError = den.div(nom);
+      console.log(`Сalculation error: 1/${invertedError.toString()}`);
       */
     });
   });
@@ -101,8 +101,8 @@ describe('js-lyf-math', function () {
       /*
       const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const bps = den.div(nom);
-      console.log(`Сalculation error: 1/${bps.toString()}`);
+      const invertedError = den.div(nom);
+      console.log(`Сalculation error: 1/${invertedError.toString()}`);
       */
     });
   });
