@@ -1,6 +1,6 @@
 const assert = require('assert').strict;
 const BN = require('bn.js');
-const {getReturn , optimalDeposit} = require('../');
+const {getReturn , optimalDeposit, sqrtBN}  = require('../');
 
 const O24 = new BN(10).pow(new BN(24));
 
@@ -71,7 +71,7 @@ describe('js-lyf-math', function () {
       /*
       const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const invertedError = den.div(nom);
+      const invertedError = sqrtBN(den.div(nom));
       console.log(`Сalculation error: 1/${invertedError.toString()}`);
       */
     });
@@ -101,7 +101,7 @@ describe('js-lyf-math', function () {
       /*
       const nom = newResA.mul(afterSwapB).sub(newResB.mul(afterSwapA)).mul(new BN(20000)).abs();
       const den = newResA.mul(afterSwapB).add(newResB.mul(afterSwapA));
-      const invertedError = den.div(nom);
+      const invertedError = sqrtBN(den.div(nom));
       console.log(`Сalculation error: 1/${invertedError.toString()}`);
       */
     });

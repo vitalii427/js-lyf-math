@@ -8,7 +8,7 @@ const TWO   = new BN(2);
 const FOUR  = new BN(4);
 const BPS_DIVISOR = new BN(10000);
 
-function bnSqrt(num) {
+function sqrtBN(num){
   if(num.lt(ZERO)) {
     throw new Error("Negtiave input");
   }
@@ -16,10 +16,21 @@ function bnSqrt(num) {
     return num;
   }
 
-  const smallCand = bnSqrt(num.shrn(2)).shln(1);
+  const smallCand = sqrtBN(num.shrn(2)).shln(1);
   const largeCand = smallCand.add(ONE);
 
   return largeCand.mul(largeCand).gt(num) ? smallCand : largeCand;
+}
+
+/**
+ * Calculates square root of a number
+ *  - throws an error when a number is negative
+ * 
+ * @param  {string|number|BN}       number      a number
+ * @return {BN}                                 square root of the given number
+ */
+module.exports.sqrtBN = function (number) {
+  return sqrtBN(new BN(number));
 }
 
 function _optimalDeposit(amtA, amtB, resA, resB, fee) {
@@ -32,7 +43,7 @@ function _optimalDeposit(amtA, amtB, resA, resB, fee) {
   const _c = amtA.mul(resB).sub(amtB.mul(resA));
   const c = _c.mul(BPS_DIVISOR).div(amtB.add(resB)).mul(resA);
   const d = a.mul(c).mul(FOUR);
-  const e = bnSqrt(b.mul(b).add(d));
+  const e = sqrtBN(b.mul(b).add(d));
 
   const numerator = e.sub(b);
   const denominator = a.mul(TWO);

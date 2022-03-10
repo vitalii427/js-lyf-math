@@ -1,6 +1,19 @@
 # js-lyf-math
 
 ```js
+const {getReturn , optimalDeposit, sqrtBN}  = require('js-lyf-math');
+```
+
+```js
+/**
+ * Calculates square root of a number
+ *  - throws an error when a number is negative
+ * 
+ * @param  {string|number|BN}       number      a number
+ * @return {BN}                                 square root of the given number
+ */
+module.exports.sqrtBN = function (number);
+
 /**
  * Calculates swap return
  * 
