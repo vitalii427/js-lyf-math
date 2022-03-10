@@ -31,7 +31,7 @@ describe('js-lyf-math', function () {
     it('correct amount & direction', function () {
       const fee = new BN(111);
       const amtA = O24.mul(new BN(20000));
-      const amtB = new BN(0);
+      const amtB = O24.mul(new BN(0));
       const resA = O24.mul(new BN(1299997));
       const resB = O24.mul(new BN(1000000000));
 
@@ -44,7 +44,52 @@ describe('js-lyf-math', function () {
       assert.equal(opt2.isReversed, true);
       assert.equal(opt2.swapAmount.toString(),
         '10017429330203108534310239605');
+    });
+  });
 
+  describe('optimal direct swap (A -> B)', function () {
+    it('correct proportion (resA/amtA = resB/amtB)', function () {
+      const fee = new BN(111);
+      const amtA = O24.mul(new BN(20000));
+      const amtB = O24.mul(new BN(6000));
+      const resA = O24.mul(new BN(1299997));
+      const resB = O24.mul(new BN(1000000000));
+
+      const {swapAmount, isReversed} = optimalDeposit(amtA, amtB, resA, resB, fee);
+      assert.equal(isReversed, false);
+
+      // do direct swap (A -> B)
+      const swappedB    = getReturn(swapAmount, resA, resB, fee);
+      const afterSwapA  = amtA.sub(swapAmount);
+      const newResA     = resA.add(swapAmount);
+      const afterSwapB  = amtB.add(swappedB);
+      const newResB     = resB.sub(swappedB);
+
+      // check proportions
+      assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
+    });
+  });
+
+  describe('optimal reversed swap (B -> A)', function () {
+    it('correct proportion (resA/amtA = resB/amtB)', function () {
+      const fee = new BN(111);
+      const amtA = O24.mul(new BN(6000));
+      const amtB = O24.mul(new BN(20000));
+      const resA = O24.mul(new BN(1000000000));
+      const resB = O24.mul(new BN(1299997));
+
+      const {swapAmount, isReversed} = optimalDeposit(amtA, amtB, resA, resB, fee);
+      assert.equal(isReversed, true);
+
+      // do reversed swap (B -> A)
+      const swappedA    = getReturn(swapAmount, resB, resA, fee);
+      const afterSwapA  = amtA.add(swappedA);
+      const newResA     = resA.sub(swappedA);
+      const afterSwapB  = amtB.sub(swapAmount);
+      const newResB     = resB.add(swapAmount);
+
+      // check proportions
+      assert.equal(newResA.div(afterSwapA).toString(), newResB.div(afterSwapB).toString());
     });
   });
 });
