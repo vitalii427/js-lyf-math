@@ -62,17 +62,13 @@ describe('js-lyf-math', function () {
 
     it('correct result', function () {
       const fee = new BN(0);
+      const amtA = O24.mul(new BN(20000));
+      const amtB = O24.mul(new BN(6000));
       const resA = O24.mul(new BN(1299997));
       const resB = O24.mul(new BN(1000000000));
-      const shares = O24.mul(new BN(3));
-      const totalShares = O24.mul(new BN(1000));
-      const  {amountBase, amountFarm, totalValue} = getPositionValue(shares, totalShares, resA, resB, fee);
-      assert.equal(amountBase.toString(),
-        '3899991000000000000000000000');
-      assert.equal(amountFarm.toString(),
-        '3000000000000000000000000000000');
+      const totalValue = getPositionValue(amtA, amtB, resA, resB, fee);
       assert.equal(totalValue.toString(),
-        '7788282027000000000000000000');
+        '20007679982000000000000000000');
     });
   });
 

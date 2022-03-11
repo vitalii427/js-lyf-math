@@ -133,11 +133,11 @@ module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee)
  * @param  {string|number|BN}       totalValue  total value
  * @return {BN}                                 value
  */
- const sharesToValue = module.exports.sharesToValue = function(shares, totalShares, totalValue) {
+module.exports.sharesToValue = function(shares, totalShares, totalValue) {
   return shares.mul(totalValue).div(totalShares);
- }
+}
 
- /**
+/**
  * Calculates a number of shares that match to the given value
  * 
  * @param  {string|number|BN}       value       a value
@@ -145,22 +145,26 @@ module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee)
  * @param  {string|number|BN}       totalValue  total value
  * @return {BN}                                 number of shares
  */
-const valueToShares = module.exports.valueToShares = function(value, totalShares, totalValue) {
+module.exports.valueToShares = function(value, totalShares, totalValue) {
   return value.mul(totalShares).div(totalValue);
 }
 
 /**
- * Calculates 
- * 
+ * Calculates position value which equals an amount of base token after position liquidation
+ *
+ * @param  {string|number|BN}       amountBase  amount of base token (debt token)
+ * @param  {string|number|BN}       amountFarm  amount of farm token
+ * @param  {string|number|BN}       reserveBase base token reserve in pool
+ * @param  {string|number|BN}       reserveFarm farm token reserve in pool
+ * @param  {string|number|BN}       fee         swap fee value in bps (10000 = 100%)
+ * @return {BN}                                 amount of base token
  */
-module.exports.getPositionValue = function(shares, totalShares, reserveBase, reserveFarm, fee) {
-  shares = new BN(shares);
-  totalShares = new BN(totalShares);
+module.exports.getPositionValue = function(amountBase, amountFarm, reserveBase, reserveFarm, fee) {
+  amountBase = new BN(amountBase);
+  amountFarm = new BN(amountFarm);
   reserveBase = new BN(reserveBase);
   reserveFarm = new BN(reserveFarm);
   fee = new BN(fee);
-  const amountBase = sharesToValue(shares, totalShares, reserveBase);
-  const amountFarm = sharesToValue(shares, totalShares, reserveFarm);
-  const totalValue = amountBase.add(getSwapReturn(amountFarm, reserveFarm.sub(amountFarm), reserveBase.sub(amountBase), fee));
-  return {amountBase, amountFarm, totalValue};
+  return amountBase.add(getSwapReturn(amountFarm, reserveFarm.sub(amountFarm), reserveBase.sub(amountBase), fee));
 }
+

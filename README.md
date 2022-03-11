@@ -19,7 +19,27 @@ const {getSwapReturn, getAmountToSwap, optimalDeposit, sqrtBN}  = require('js-ly
 module.exports.sqrtBN = function (number);
 
 /**
- * Calculates how much output token will be returned after swap of the given amount of input token
+ * Calculates a value that matches to the given number of shares
+ * 
+ * @param  {string|number|BN}       shares      number of shares
+ * @param  {string|number|BN}       totalShares total number of shares
+ * @param  {string|number|BN}       totalValue  total value
+ * @return {BN}                                 value
+ */
+module.exports.sharesToValue = function(shares, totalShares, totalValue);
+
+/**
+ * Calculates a number of shares that match to the given value
+ * 
+ * @param  {string|number|BN}       value       a value
+ * @param  {string|number|BN}       totalShares total shares amount
+ * @param  {string|number|BN}       totalValue  total value
+ * @return {BN}                                 number of shares
+ */
+module.exports.valueToShares = function(value, totalShares, totalValue);
+
+/**
+ * Calculates an amount output token will be returned after swap of the given amount of input token
  * 
  * @param  {string|number|BN}       amountIn    amount of input token to swap
  * @param  {string|number|BN}       reserveIn   input token reserve in pool
@@ -30,7 +50,7 @@ module.exports.sqrtBN = function (number);
 module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee);
 
 /**
- * Calculates how much input token you should swap to get *at least* the given amount of output token
+ * Calculates an amount of input token you should swap to get *at least* the given amount of output token
  * 
  * @param  {string|number|BN}       amountOut   amount of output token to get
  * @param  {string|number|BN}       reserveIn   input token reserve in pool
@@ -39,6 +59,18 @@ module.exports.getSwapReturn = function(amountIn, reserveIn, reserveOut, fee);
  * @return {BN}                                 amount of input token
  */
 module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee);
+
+/**
+ * Calculates position value which equals an amount of base token after position liquidation
+ *
+ * @param  {string|number|BN}       amountBase  amount of base token (debt token)
+ * @param  {string|number|BN}       amountFarm  amount of farm token
+ * @param  {string|number|BN}       reserveBase base token reserve in pool
+ * @param  {string|number|BN}       reserveFarm farm token reserve in pool
+ * @param  {string|number|BN}       fee         swap fee value in bps (10000 = 100%)
+ * @return {BN}                                 amount of base token
+ */
+module.exports.getPositionValue = function(amountBase, amountFarm, reserveBase, reserveFarm, fee);
 
 /**
  * Calculates optimal swap amount and swap direction
