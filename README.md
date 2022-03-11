@@ -12,7 +12,7 @@ const {
   sharesToValue,
   valueToShares,
   sqrtBN
-}  = require('../');
+} = require('js-lyf-math');
 ```
 
 ### Reference
