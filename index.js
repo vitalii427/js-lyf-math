@@ -68,9 +68,9 @@ module.exports.optimalDeposit = function(amtA, amtB, resA, resB, fee) {
   const _resB = new BN(resB);
   const _fee  = new BN(fee);
   if ( _amtA.lt(ZERO) || _amtB.lt(ZERO)
-    || _resA.lte(ZERO) || _resB.lte(ZERO)
-    || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
-      throw new Error("Invalid input");
+  || _resA.lte(ZERO) || _resB.lte(ZERO)
+  || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
+    throw new Error("Invalid input");
   }
   const isReversed = _amtA.mul(_resB).lt(_amtB.mul(_resA));
   const swapAmount = isReversed
@@ -94,8 +94,8 @@ const getSwapReturn = module.exports.getSwapReturn = function(amountIn, reserveI
   const resOut = new BN(reserveOut);
   const _fee   = new BN(fee);
   if ( resIn.lte(ZERO) || resOut.lte(ZERO) || amtIn.lte(ZERO)
-    || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
-      throw new Error("Invalid input");
+  || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
+    throw new Error("Invalid input");
   }
 
   const amountWithFee = amtIn.mul(BPS_DIVISOR.sub(_fee));
@@ -117,8 +117,8 @@ module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee)
   const resOut = new BN(reserveOut);
   const _fee   = new BN(fee);
   if ( resIn.lte(ZERO) || resOut.lte(ZERO) || amtOut.lte(ZERO)
-    || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
-      throw new Error("Invalid input");
+  || _fee.lt(ZERO) || _fee.gt(BPS_DIVISOR) ) {
+    throw new Error("Invalid input");
   }
 
   const amountWithFee = amtOut.mul(BPS_DIVISOR).mul(resIn).div(resOut.sub(amtOut));
@@ -134,6 +134,12 @@ module.exports.getAmountToSwap = function(amountOut, reserveIn, reserveOut, fee)
  * @return {BN}                                 value
  */
 module.exports.sharesToValue = function(shares, totalShares, totalValue) {
+  shares      = new BN(shares);
+  totalShares = new BN(totalShares);
+  totalValue  = new BN(totalValue);
+  if ( shares.lte(ZERO) || totalShares.lt(ZERO) || totalValue.lte(ZERO) ) {
+    throw new Error("Invalid input");
+  }
   return shares.mul(totalValue).div(totalShares);
 }
 
@@ -146,6 +152,12 @@ module.exports.sharesToValue = function(shares, totalShares, totalValue) {
  * @return {BN}                                 number of shares
  */
 module.exports.valueToShares = function(value, totalShares, totalValue) {
+  value       = new BN(value);
+  totalShares = new BN(totalShares);
+  totalValue  = new BN(totalValue);
+  if ( value.lte(ZERO) || totalShares.lte(ZERO) || totalValue.lt(ZERO) ) {
+    throw new Error("Invalid input");
+  }
   return value.mul(totalShares).div(totalValue);
 }
 
@@ -165,6 +177,11 @@ module.exports.getPositionValue = function(amountBase, amountFarm, reserveBase, 
   reserveBase = new BN(reserveBase);
   reserveFarm = new BN(reserveFarm);
   fee = new BN(fee);
+  if ( amountBase.lte(ZERO) || amountFarm.lte(ZERO)
+  || reserveBase.lte(ZERO) || reserveFarm.lte(ZERO)
+  || fee.lt(ZERO) || fee.gt(BPS_DIVISOR) ) {
+    throw new Error("Invalid input");
+  }
   return amountBase.add(getSwapReturn(amountFarm, reserveFarm.sub(amountFarm), reserveBase.sub(amountBase), fee));
 }
 

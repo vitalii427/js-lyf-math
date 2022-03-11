@@ -4,7 +4,15 @@ JavaScript library containing leverage yield farming helper functions. Depends o
 
 ### Usage
 ```js
-const {getSwapReturn, getAmountToSwap, optimalDeposit, sqrtBN}  = require('js-lyf-math');
+const {
+  getSwapReturn,
+  getAmountToSwap,
+  getPositionValue,
+  optimalDeposit,
+  sharesToValue,
+  valueToShares,
+  sqrtBN
+}  = require('../');
 ```
 
 ### Reference

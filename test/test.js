@@ -1,6 +1,14 @@
 const assert = require('assert').strict;
 const BN = require('bn.js');
-const {getSwapReturn, getAmountToSwap, getPositionValue, optimalDeposit, sqrtBN}  = require('../');
+const {
+  getSwapReturn,
+  getAmountToSwap,
+  getPositionValue,
+  optimalDeposit,
+  sharesToValue,
+  valueToShares,
+  sqrtBN
+}  = require('../');
 
 const O24 = new BN(10).pow(new BN(24));
 
