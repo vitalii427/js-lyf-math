@@ -1,7 +1,7 @@
 {
   "name": "js-lyf-math",
   "version": "0.0.2",
-  "description": "JavaScript library containing leverage yield farming helper function",
+  "description": "JavaScript library containing leverage yield farming helper functions",
 
   "homepage": "https://github.com/vitalii427/js-lyf-math#readme",
   "bugs": {

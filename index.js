@@ -137,8 +137,11 @@ module.exports.sharesToValue = function(shares, totalShares, totalValue) {
   shares      = new BN(shares);
   totalShares = new BN(totalShares);
   totalValue  = new BN(totalValue);
-  if ( shares.lte(ZERO) || totalShares.lt(ZERO) || totalValue.lte(ZERO) ) {
+  if ( shares.lte(ZERO) || totalShares.lt(ZERO) || totalValue.lt(ZERO) ) {
     throw new Error("Invalid input");
+  }
+  if (totalShares.eq(ZERO)) {
+    return shares; // When there's no shares, 1 share = 1 value
   }
   return shares.mul(totalValue).div(totalShares);
 }
@@ -155,8 +158,11 @@ module.exports.valueToShares = function(value, totalShares, totalValue) {
   value       = new BN(value);
   totalShares = new BN(totalShares);
   totalValue  = new BN(totalValue);
-  if ( value.lte(ZERO) || totalShares.lte(ZERO) || totalValue.lt(ZERO) ) {
+  if ( value.lte(ZERO) || totalShares.lt(ZERO) || totalValue.lt(ZERO) ) {
     throw new Error("Invalid input");
+  }
+  if (totalShares.eq(ZERO)) {
+    return value; // When there's no shares, 1 share = 1 value
   }
   return value.mul(totalShares).div(totalValue);
 }
