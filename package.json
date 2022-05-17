@@ -16,7 +16,6 @@
   "files": [
     "lib/index.js"
   ],
-  "main": "lib/index.js",
   "browser": {
     "buffer": false
   },
